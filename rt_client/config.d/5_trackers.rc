@@ -1,0 +1,21 @@
+## DHT Nodes and Trackers
+
+# Get own public IP address
+method.insert = get_public_ip_address, simple|private, "execute.capture=/bin/bash,-c,\"eval echo -n \$(dig -4 TXT +short o-o.myaddr.1.google.com @ns1.google.com)\""
+
+# Set own IP address to be reported to trackers
+schedule2 = ip_tick, 0, 1800, "network.local_address.set=(get_public_ip_address)"
+
+# Default tracker
+method.insert = d.add_tracker, simple|private, "d.tracker.insert=\"10\", \"http://tracker.openbittorrent.com:80/announce\""
+
+# Add tracker to new torrents
+method.set_key = event.download.inserted_new, tracker_insert, ((d.add_tracker))
+
+# Add dht nodes
+schedule2 = dht_add_node_1, 30, 0, "dht.add_node=router.utorrent.com:6881"
+schedule2 = dht_add_node_2, 31, 0, "dht.add_node=router.bittorrent.com:6881"
+schedule2 = dht_add_node_3, 32, 0, "dht.add_node=dht.transmissionbt.com:6881"
+schedule2 = dht_add_node_4, 33, 0, "dht.add_node=router.bitcomet.com:6881"
+
+

@@ -1,0 +1,7 @@
+## Performance:
+##      Global upload and download rate in KiB, '0' for unlimited
+
+# Max download rate = 15 mbit
+throttle.global_down.max_rate.set_kb = 15000
+# Max upload rate = 5 mbit
+throttle.global_up.max_rate.set_kb = 5000

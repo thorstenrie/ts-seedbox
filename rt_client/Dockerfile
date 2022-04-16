@@ -1,0 +1,23 @@
+# syntax=docker/dockerfile:1
+FROM docker.io/library/archlinux:latest
+
+ARG UGID=667
+
+RUN groupadd -g $UGID rtorrent && \
+     useradd -r -m -u $UGID -g rtorrent rtorrent && \
+     pacman -Syu --noconfirm && \
+     pacman -S --noconfirm rtorrent bind && \
+     mkdir -p /home/rtorrent/rtorrent/config.d && \
+     mkdir /home/rtorrent/rtorrent/.session && \
+     mkdir /home/rtorrent/rtorrent/download && \
+     mkdir /home/rtorrent/rtorrent/watch && \
+     chown -R rtorrent:rtorrent /home/rtorrent/rtorrent
+
+COPY --chown=rtorrent:rtorrent config.d/ /home/rtorrent/rtorrent/config.d/
+COPY --chown=rtorrent:rtorrent .rtorrent.rc /home/rtorrent/
+
+VOLUME /home/rtorrent/rtorrent/.session
+
+USER rtorrent
+
+CMD ["rtorrent"]
