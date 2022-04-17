@@ -5,6 +5,10 @@
 - **Functionality**: Pre-configured for use on a home/self-hosted server
 - **Easy setup**: Use the example shell scripts for an easy start to launch the container and start downloading and seeding
 
+First, clone the git repository:
+
+    git clone https://github.com/Licht-Protoss/ts-seedbox.git
+
 Two options to get it running:
 
 - **Quick Start Guide**: Run the container with minimal effort by using provided example scripts
@@ -13,7 +17,7 @@ Two options to get it running:
 
 ## Prerequisites
 
-[Podman](https://podman.io/), a x86-64 Linux system and root access to it is required.
+[Podman](https://podman.io/) on a x86-64 Linux system and root access to it is required.
 
 ## Network Setup
 
@@ -32,11 +36,17 @@ Additionally, both ports need to be published with the container or pod. With [p
 
 ## Quick Start with Example Scripts
 
-> Use the example scripts only in development environments. The scripts create directories and a non-root system user, therefore changes the system.
+> Use the example scripts only in a development environment. The scripts create directories and a non-root system user, therefore change the host system.
 
 > Most commands need root user rights, e.g., you can precede commands with `sudo`
 
-1. Configure a new environment variable $TS_RT_CLIENT_HOME pointing to the directory where the downloaded files will be stored, e.g., 
+> It is recommended to check the scripts before executing them.
+
+1. Change your current directory to `example-scripts`
+
+        $ cd example-scripts
+
+1. Configure a new environment variable `$TS_RT_CLIENT_HOME` pointing to the directory where the downloaded files will be stored, e.g., 
 
         $ export TS_RT_CLIENT_HOME=/srv/rtorrent
 
@@ -60,6 +70,96 @@ Additionally, both ports need to be published with the container or pod. With [p
 
         # ./remove-ts-seedbox.sh
         
-## Step by Step Container Setup
+## Setup Guide & Execution
+
+### Download directory
+
+The download directory is a bind mount mapping the download directory in the container a defined download directory on the host system. Therefore, a download directory needs to be created in the container and in the host system.
+
+- For the container, the directory will be automatically created in the container build
+- For the host system, you need to define and create it by yourself.
+
+First, create an environment variable, holding the host system download directory path, e.g., `/srv/rtorrent`
+
+        $ export TS_RT_CLIENT_HOME=/srv/rtorrent
+
+Afterwards, create the directory
+
+        # mkdir -p "$TS_RT_CLIENT_HOME"/download
+        
+### rtorrent session data
+
+The rtorrent session data should be stored in the host system. This enables to keep session data in case the container is stopped or removed and is launched again afterwards. Therefore, the named volume `rtorrent_session` is created when running the container the first time (see below). Afterwards, the named volume will be used for following executions of the container.
+
+### Non-root system user
+
+Within the container, the rtorrent client will be executed by a non-root system user with username `rtorrent`, `UID 667` in group `rtorrent`, `GID 667`. The user is also required to be existent on the host system to actually store downloaded files in the bind mount.
+
+- For the container, the user will be automatically created in the container build
+- For the host system, you need to create the user, group and change the owner of `$TS_RT_CLIENT_HOME`
+
+To create the group and user, run
+
+    # groupadd -r --gid 667 rtorrent
+    # useradd -r --uid 667 --gid 667 -s /usr/bin/nologin rtorrent
+    
+Next, change the owner of `$TS_RT_CLIENT_HOME` to the new user
+
+    # chown 667:667 "$TS_RT_CLIENT_HOME"/download
+
+### Build container image
+
+The container image `rt_client` is build with [podman-build](https://docs.podman.io/en/latest/markdown/podman-build.1.html). With the flags `--pull` and `--no-cache` we explicitely require the base image to be pulled from the registry and build from start.
+
+    # podman build --pull --no-cache  -t rt_client ../rt_client/
+    
+### Create pod
+
+The container will be launched in a pod [1](https://kubernetes.io/docs/concepts/workloads/pods/) [2](https://developers.redhat.com/blog/2019/01/15/podman-managing-containers-pods). Here, we will create a new pod named `ts_seedbox_pod`. To enable the rtorrent client in the container to use the required ports, they have to be published to the host.
+
+    # podman pod create \
+        --name ts_seedbox_pod \
+        --publish 50000:50000 \
+        --publish 6881:6881 \
+        --publish 6881:6881/udp
+
+### Launch container
+
+With [podman-run](https://docs.podman.io/en/latest/markdown/podman-run.1.html), the rtorrent client is launched in container `rt_clt` in pod `ts_seedbox_pod`. With the `--volume` flags, the download directory bind mount and named session data volume are used. With `--rm` the container will be removed when it exits.
+
+    # podman run --rm -d \
+        --pod ts_seedbox_pod \
+        --volume rtorrent_session:/home/rtorrent/rtorrent/.session \
+        --volume "$TS_RT_CLIENT_HOME"/download:/home/rtorrent/rtorrent/download \
+        --name rt_clt \
+        rt_client
+        
+### Get rTorrent status
+
+The log of the rtorrent client can be viewed with [podman-logs](https://docs.podman.io/en/latest/markdown/podman-logs.1.html)
+
+    # podman logs -f rt_clt
+    
+### Start torrent
+
+A torrent is started by copying a `.torrent` file to the directory in the container `/home/rtorrent/rtorrent/watch/start`. As example, you could start by downloading the [Archlinux Image](https://archlinux.org/download/).
+
+First, download the latest Archlinux `.torrent` file
+
+    $ curl https://archlinux.org/releng/releases/$(date +'%Y.%m.01')/torrent/ --output archlinux.iso.torrent
+    
+Next, copy the `.torrent` file into the start directory in the container
+
+    # podman cp archlinux.iso.torrent rt_clt:/home/rtorrent/rtorrent/watch/start
+    
+The rtorrent client in the container will automatically start downloading. After the download is completed, it is seeded to other clients.
+
+### Stop container
+
+The container can be stopped by stopping containers in the `ts_seedbox_pod` with [podman-pod-stop](https://docs.podman.io/en/latest/markdown/podman-pod-stop.1.html)
+
+    # podman pod stop ts_seedbox_pod
+    
+### Remove container
 
 ## Configuration & Maintainance
