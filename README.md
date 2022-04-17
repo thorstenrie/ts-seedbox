@@ -1,8 +1,8 @@
 # ts-seedbox
-[RTorrent](https://github.com/rakshasa/rtorrent/wiki), [Archlinux](https://archlinux.org/) and [Podman](https://podman.io/) based container seedbox that tries to keep it simple ([KISS principle](https://en.wikipedia.org/wiki/KISS_principle)). One purpose could be to support distributing free software if you can spare server and bandwidth ressources (e.g., [Archlinux](https://archlinux.org/download/)). After network and container set up is completed, just put torrent files into the container's *watch/start* directory and the file will be downloaded to the host *download* directory.
+[RTorrent](https://github.com/rakshasa/rtorrent/wiki), [Archlinux](https://archlinux.org/) and [Podman](https://podman.io/) based container seedbox that tries to keep it simple ([KISS principle](https://en.wikipedia.org/wiki/KISS_principle)). One purpose could be to support distributing free software if you can spare server and bandwidth ressources (e.g., [Archlinux](https://archlinux.org/download/)). After the network and container setup is completed, just put torrent files into the container's *watch/start* directory and the file will be downloaded to the host *download* directory and continued to be seeded.
 
 - **Security**: rTorrent is run from a non-root system user
-- **Functionality**: Pre-configured for use on a home/self-hosted server
+- **Functionality**: rTorrent is pre-configured for use on a home/self-hosted server
 - **Easy setup**: Use the example shell scripts for an easy start to launch the container and start downloading and seeding
 
 First, clone the git repository:
@@ -13,7 +13,7 @@ Two options to get it running:
 
 - **Quick Start Guide**: Run the container with minimal effort by using provided example scripts
 *(Warning: only recommended for development environments!)*
-- **Setup Guide**: Follow each step of the setup guide
+- **Setup Guide**: Follow each step of the setup guide and adapt it to your needs
 
 ## Prerequisites
 
@@ -87,9 +87,9 @@ Afterwards, create the directory
 
         # mkdir -p "$TS_RT_CLIENT_HOME"/download
         
-### rtorrent session data
+### rTorrent session data
 
-The rtorrent session data should be stored in the host system. This enables to keep session data in case the container is stopped or removed and is launched again afterwards. Therefore, the named volume `rtorrent_session` is created when running the container the first time (see below). Afterwards, the named volume will be used for following executions of the container.
+The rTorrent session data should be stored in the host system. This enables to keep session data in case the container is stopped or removed and is launched again afterwards. Therefore, the named volume `rtorrent_session` is created when running the container the first time (see below). Afterwards, the named volume will be used for following executions of the container.
 
 ### Non-root system user
 
@@ -160,6 +160,28 @@ The container can be stopped by stopping containers in the `ts_seedbox_pod` with
 
     # podman pod stop ts_seedbox_pod
     
-### Remove container
+### Remove all 
+
+The following commands remove the pod, container, container images and named session data volume.
+
+    # podman pod rm ts_seedbox_pod
+    # podman container rm rt_clt
+    # podman rmi archlinux
+    # podman rmi rt_client
+    # podman volume rm rtorrent_session
 
 ## Configuration & Maintainance
+
+- To see the size and number of downloaded files, you could use
+
+        # printf "Total %i files with size %s in rtorrent download directory \"%s\".\n" $(ls "$TS_RT_CLIENT_HOME"/download | wc -l) $(du -sh "$TS_RT_CLIENT_HOME" | awk '{print $1}') "$TS_RT_CLIENT_HOME"
+        
+- The rTorrent configuration is based on the original [Config Template](https://github.com/rakshasa/rtorrent/wiki/CONFIG-Template)
+
+- The rTorrent configuration can be found in the files in `rt_client/config.d/`
+
+- Updating the configuration requires adapting the configuration files and re-building the container image.
+
+- Global upload and download rate limits are set in `rt_client/config.d/4_perf.rc`
+
+- In the sense of a rolling-release model, it is recommended to rebuild the container image frequently, e.g., based on time periods, like weekly, or every time it is launched. This ensures that the container stays up-to-date with latest updates making full use of the rolling-release model of Archlinux.
