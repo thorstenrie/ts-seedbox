@@ -6,7 +6,7 @@
 podman pod rm ts_seedbox_pod
 
 # Remove container (not needed with --rm option when using podman run)
-podman container rm rt_client
+podman container rm rt_clt
 
 # Remove container images
 podman rmi archlinux
