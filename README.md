@@ -3,7 +3,7 @@
 
 - **Security**: rTorrent is run from a non-root system user
 - **Functionality**: Pre-configured for use on a home/self-hosted server
-- **Easy setup**: Use the example shell scripts for an easy start to launch the container and start downloading and seeding the latest Archlinux image
+- **Easy setup**: Use the example shell scripts for an easy start to launch the container and start downloading and seeding
 
 Two options to get it running:
 
