@@ -9,4 +9,4 @@ curl https://archlinux.org/releng/releases/$(date +'%Y.%m.01')/torrent/ --output
 
 podman cp "$TORRENT_ARCH_FILE" rt_clt:/home/rtorrent/rtorrent/watch/start
 
-printf "Total %i files with size %s in rtorrent download directory \"%s\".\n" $(ls "$RT_CLIENT_HOME"/download | wc -l) $(du -sh "$RT_CLIENT_HOME" | awk '{print $1}') "$RT_CLIENT_HOME"
+printf "Total %i files with size %s in rtorrent download directory \"%s\".\n" $(ls "$TS_RT_CLIENT_HOME"/download | wc -l) $(du -sh "$TS_RT_CLIENT_HOME" | awk '{print $1}') "$TS_RT_CLIENT_HOME"
