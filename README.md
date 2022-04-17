@@ -8,7 +8,7 @@
 You have two options to get it running
 
 - **Quick Start Guide**: Run the container with minimal effort by using provided example scripts (Warning: only recommended for development environments!)
-- **Setup Guide**: Follow step by step the setup guide
+- **Setup Guide**: Follow the steps of the setup guide
 
 ## Networking
 
