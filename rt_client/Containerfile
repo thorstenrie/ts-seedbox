@@ -1,5 +1,7 @@
 FROM docker.io/library/archlinux:latest
 
+LABEL maintainer="Lichtprotoss <https://github.com/Licht-Protoss/ts-seedbox>"
+
 ARG UGID=667
 
 RUN groupadd -g $UGID rtorrent && \
