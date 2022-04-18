@@ -111,7 +111,7 @@ Next, change the owner of `$TS_RT_CLIENT_HOME` to the new user
 
 The container image `rt_client` is build with [podman-build](https://docs.podman.io/en/latest/markdown/podman-build.1.html). With the flags `--pull` and `--no-cache` we explicitely require the base image to be pulled from the registry and build from start.
 
-    # podman build --pull --no-cache  -t rt_client ../rt_client/
+    # podman build --pull --no-cache  -t rt_client ./rt_client/
     
 ### Create pod
 
