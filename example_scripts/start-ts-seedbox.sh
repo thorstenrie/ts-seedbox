@@ -1,17 +1,17 @@
 #!/bin/sh
 
 # Build container image
-podman build --pull --no-cache  -t rt_client ../rt_client/
+sudo podman build --pull --no-cache  -t rt_client ../rt_client/
 
 # Start pod
-podman pod create \
+sudo podman pod create \
     --name ts_seedbox_pod \
     --publish 50000:50000 \
     --publish 6881:6881 \
     --publish 6881:6881/udp
 
 # Start container
-podman run --rm -d \
+sudo podman run --rm -d \
     --pod ts_seedbox_pod \
     --volume rtorrent_session:/home/rtorrent/rtorrent/.session \
     --volume "$TS_RT_CLIENT_HOME"/download:/home/rtorrent/rtorrent/download \
@@ -22,4 +22,4 @@ podman run --rm -d \
 sleep 5s
 
 # Get rtorrent client status
-podman logs -f rt_clt
+sudo podman logs -f rt_clt
