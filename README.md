@@ -11,10 +11,10 @@ Clone the git repository with:
 
 Three options to get it running:
 
-- **Quick Start Guide**: Run the container with minimal effort by using provided example scripts
+- **Build & run with the Quick Start Guide**: Run the container with minimal effort by using provided example scripts
 *(Warning: only recommended for development environments!)*
-- **Setup Guide**: Follow each step of the setup guide and adapt it to your needs
-- **Directly pull container image**: [docker.io/lichtprotoss/ts-seedbox](https://hub.docker.com/repository/docker/lichtprotoss/ts-seedbox) (follow the Readme)
+- **Build & run with the Setup Guide**: Follow each step of the setup guide and adapt it to your needs
+- **Directly pull the container image**: Follow the Readme on [docker.io/lichtprotoss/ts-seedbox](https://hub.docker.com/repository/docker/lichtprotoss/ts-seedbox) (container building not needed)
 
 ## Prerequisites
 
