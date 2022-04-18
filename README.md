@@ -14,7 +14,7 @@ Three options to get it running:
 - **Quick Start Guide**: Run the container with minimal effort by using provided example scripts
 *(Warning: only recommended for development environments!)*
 - **Setup Guide**: Follow each step of the setup guide and adapt it to your needs
-- **Directly pull container image**: [docker.io/lichtprotoss/ts-seedbox](https://hub.docker.com/repository/docker/lichtprotoss/ts-seedbox) (see Readme)
+- **Directly pull container image**: [docker.io/lichtprotoss/ts-seedbox](https://hub.docker.com/repository/docker/lichtprotoss/ts-seedbox) (follow the Readme)
 
 ## Prerequisites
 
