@@ -5,15 +5,16 @@
 - **Functionality**: rTorrent is pre-configured for use on a home/self-hosted server
 - **Easy setup**: Use the example shell scripts for an easy start to launch the container and start downloading and seeding
 
-First, clone the git repository:
+Clone the git repository with:
 
     git clone https://github.com/Licht-Protoss/ts-seedbox.git
 
-Two options to get it running:
+Three options to get it running:
 
 - **Quick Start Guide**: Run the container with minimal effort by using provided example scripts
 *(Warning: only recommended for development environments!)*
 - **Setup Guide**: Follow each step of the setup guide and adapt it to your needs
+- **Directly pull container image**: [docker.io/lichtprotoss/ts-seedbox](https://hub.docker.com/repository/docker/lichtprotoss/ts-seedbox) (see Readme)
 
 ## Prerequisites
 
