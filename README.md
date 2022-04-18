@@ -38,9 +38,9 @@ Additionally, both ports need to be published with the container or pod. With [p
 
 > Use the example scripts only in a development environment. The scripts create directories and a non-root system user, therefore change the host system.
 
-> Most commands need root user rights, e.g., you can precede commands with `sudo`
+> Requires `sudo`: Some commands need root user rights and therefore are preceded with `sudo`
 
-> It is recommended to check the scripts before executing them.
+> It is recommended to check the scripts before executing them to prevent unwanted behavior
 
 1. Change your current directory to `example-scripts`
 
@@ -52,23 +52,23 @@ Additionally, both ports need to be published with the container or pod. With [p
 
 2. Run the setup script once to set up your system by creating the download directory, non-root system user and group `rtorrent` with `UID 667` and `GID 667`
 
-        # ./setup-ts-seedbox.sh
+        $ ./setup-ts-seedbox.sh
         
 3. Run the start script to start a pod, the container and open the log output. A volume for session data is created and the download directory is mounted into the container
 
-        # ./start-ts-seedbox.sh
+        $ ./start-ts-seedbox.sh
         
 4. Optional: To start downloading the latest Archlinux image, run
 
-        # ./archlinux_torrent.sh
+        $ ./archlinux_torrent.sh
         
 5. To stop the pod and container, execute
 
-        # ./stop-ts-seedbox.sh
+        $ ./stop-ts-seedbox.sh
         
 6. To remove all images and the volume for the session data, you can run
 
-        # ./remove-ts-seedbox.sh
+        $ ./remove-ts-seedbox.sh
         
 ## Setup Guide & Execution
 
