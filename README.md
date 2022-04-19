@@ -1,5 +1,5 @@
 # ts-seedbox
-[RTorrent](https://github.com/rakshasa/rtorrent/wiki), [Archlinux](https://archlinux.org/) and [Podman](https://podman.io/) based container seedbox that tries to keep it simple ([KISS principle](https://en.wikipedia.org/wiki/KISS_principle)). One purpose could be to support distributing free software if you can spare server and bandwidth ressources (e.g., [Archlinux](https://archlinux.org/download/)). After the network and container setup is completed, just put torrent files into the container's *watch/start* directory and the file will be downloaded to the host *download* directory and continued to be seeded.
+[RTorrent](https://github.com/rakshasa/rtorrent/wiki) and [Archlinux](https://archlinux.org/) based seedbox container that tries to keep it simple ([KISS principle](https://en.wikipedia.org/wiki/KISS_principle)). One purpose could be to support distributing free software if you can spare server and bandwidth ressources (e.g., [Archlinux](https://archlinux.org/download/)). After the network and container setup is completed, just put torrent files into the container's *watch/start* directory and the file will be downloaded to the host *download* directory and continued to be seeded.
 
 - **Security**: rTorrent is run from a non-root system user
 - **Functionality**: rTorrent is pre-configured for use on a home/self-hosted server
@@ -18,7 +18,11 @@ Three options to get it running:
 
 ## Prerequisites
 
-[Podman](https://podman.io/) on a x86-64 Linux system and root access to it is required.
+The container is build and tested with [Podman](https://podman.io/). To complete the guide, [Podman](https://podman.io/) on a x86-64 Linux system and root access is required.
+
+The container is expected to also run with Docker. To complete the guide with Docker, adaptations are needed.
+- To build the container image with Docker: Rename [Containerfile](https://github.com/Licht-Protoss/ts-seedbox/blob/main/rt_client/Containerfile) to `Dockerfile` and [substitute](https://podman.io/whatis.html) `podman` commands with `docker` commands. Further adaptations may be necessary.
+- To complete the guide and run the container with docker: [Substitute](https://podman.io/whatis.html) the `podman` commands with `docker` commands, omit the [podman pod create](https://docs.podman.io/en/latest/markdown/podman-pod-create.1.html) command, instead add the `--publish` flags to the `docker run` command. Further adaptations may be necessary.
 
 ## Network Setup
 
@@ -37,7 +41,7 @@ Additionally, both ports need to be published with the container or pod. With [p
 
 ## Quick Start with Example Scripts
 
-> Use the example scripts only in a development environment. The scripts create directories and a non-root system user, therefore change the host system.
+> Use the example scripts with caution and only in a development environment. The scripts create directories and a non-root system user, therefore change the host system.
 
 > Requires `sudo`: Some commands need root user rights and therefore are preceded with `sudo`
 
