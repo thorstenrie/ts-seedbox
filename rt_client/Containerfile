@@ -1,6 +1,6 @@
 FROM docker.io/library/archlinux:latest
 
-LABEL maintainer="Lichtprotoss <https://github.com/Licht-Protoss/ts-seedbox>"
+LABEL maintainer="thorstenrie <https://github.com/thorstenrie/ts-seedbox>"
 
 ARG UGID=667
 
