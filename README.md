@@ -7,7 +7,7 @@
 
 Clone the git repository with:
 
-    git clone https://github.com/Licht-Protoss/ts-seedbox.git
+    git clone https://github.com/thorstenrie/ts-seedbox.git
 
 Three options to get it running:
 
@@ -21,7 +21,7 @@ Three options to get it running:
 The container is build and tested with [Podman](https://podman.io/). To complete the guide, [Podman](https://podman.io/) on a x86-64 Linux system and root access is required.
 
 The container is expected to also run with Docker. To complete the guide with Docker, adaptations are needed.
-- To build the container image with Docker: Rename [Containerfile](https://github.com/Licht-Protoss/ts-seedbox/blob/main/rt_client/Containerfile) to `Dockerfile` and [substitute](https://podman.io/whatis.html) `podman` commands with `docker` commands. Further adaptations may be necessary.
+- To build the container image with Docker: Rename [Containerfile](https://github.com/thorstenrie/ts-seedbox/blob/main/rt_client/Containerfile) to `Dockerfile` and [substitute](https://podman.io/whatis.html) `podman` commands with `docker` commands. Further adaptations may be necessary.
 - To complete the guide and run the container with docker: [Substitute](https://podman.io/whatis.html) the `podman` commands with `docker` commands, omit the [podman pod create](https://docs.podman.io/en/latest/markdown/podman-pod-create.1.html) command, instead add the `--publish` flags to the `docker run` command. Further adaptations may be necessary.
 
 ## Network Setup
