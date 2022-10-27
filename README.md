@@ -1,8 +1,8 @@
 # ts-seedbox
-[RTorrent](https://github.com/rakshasa/rtorrent/wiki) and [Archlinux](https://archlinux.org/) based seedbox container that tries to keep it simple ([KISS principle](https://en.wikipedia.org/wiki/KISS_principle)). One purpose could be to support distributing free software if you can spare server and bandwidth ressources (e.g., [Archlinux](https://archlinux.org/download/)). After the network and container setup is completed, just put torrent files into the container's *watch/start* directory and the file will be downloaded to the host *download* directory and continued to be seeded.
+[RTorrent](https://github.com/rakshasa/rtorrent/wiki) and [Archlinux](https://archlinux.org/) based seedbox container that tries to keep it simple ([KISS principle](https://en.wikipedia.org/wiki/KISS_principle)). One purpose could be to support distributing free software if you can spare server and bandwidth resources (e.g., [Archlinux](https://archlinux.org/download/)). After the network and container setup is completed, just put torrent files into the container's *watch/start* directory and the file will be downloaded to the host *download* directory and continued to be seeded.
 
-- **Security**: rTorrent is run from a non-root system user
-- **Functionality**: rTorrent is pre-configured for use on a home/self-hosted server
+- **Security**: rTorrent is run from a non-root system user, ready and recommended to be run in a new user namespace
+- **Functionality**: rTorrent is pre-configured for use on a home/self-hosted server and ready to download trackerless torrents
 - **Easy setup**: Use the example shell scripts for an easy start to launch the container and start downloading and seeding
 
 Clone the git repository with:
@@ -14,7 +14,7 @@ Three options to get it running:
 - **Build & run with the Quick Start Guide**: Run the container with minimal effort by using provided example scripts
 *(Warning: only recommended for development environments!)*
 - **Build & run with the Setup Guide**: Follow each step of the setup guide and adapt it to your needs
-- **Directly pull the container image**: Follow the Readme on [docker.io/lichtprotoss/ts-seedbox](https://hub.docker.com/repository/docker/lichtprotoss/ts-seedbox) (container building not needed)
+- **Directly pull the container image**: Follow the Readme on [docker.io/thorstenrie/ts-seedbox](https://hub.docker.com/repository/docker/thorstenrie/ts-seedbox) (container building not needed)
 
 ## Prerequisites
 
@@ -28,10 +28,10 @@ The container is expected to also run with Docker. To complete the guide with Do
 
 To run properly, two ports are needed: 
 
-- `Port 50000`: Listening port for incoming peer traffic (TCP)
-- `Port 6881`: DHT for storing peer contact information for "trackerless" torrents (TCP and UDP)
+- `Port 50000`: Listening port for incoming peer traffic, TCP
+- `Port 6881`: DHT for storing peer contact information for "trackerless" torrents, TCP and UDP
 
-Both ports need to be opened and forwarded in router and firewall with their corresponding protocols (TCP and/or UDP). Check your hardware and software documentations on how to open and forward ports. For example, if you use [ufw](https://launchpad.net/ufw) as firewall, you could run as root
+Both ports need to be opened and forwarded in routers and firewalls with their corresponding protocols (TCP and/or UDP). Check your hardware and software documentation on how to open and forward ports. For example, if you use [ufw](https://launchpad.net/ufw) as firewall, you could run as root
 
     # ufw route allow proto tcp to any port 50000
     # ufw route allow proto tcp to any port 6881
@@ -54,6 +54,8 @@ Additionally, both ports need to be published with the container or pod. With [p
 1. Configure a new environment variable `$TS_RT_CLIENT_HOME` pointing to the directory where the downloaded files will be stored, e.g., 
 
         $ export TS_RT_CLIENT_HOME=/srv/rtorrent
+        
+1. Configure a new environment variable `$TS_USERNS_RT` ... TODO
 
 2. Run the setup script once to set up your system by creating the download directory, non-root system user and group `rtorrent` with `UID 667` and `GID 667`
 
