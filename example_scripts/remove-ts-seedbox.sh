@@ -12,5 +12,4 @@ sudo podman container rm rt_clt
 sudo podman rmi archlinux
 sudo podman rmi rt_client
 
-# Remove rtorrent volume (only needed for testing to start from scratch)
-sudo podman volume rm rtorrent_session
+# To start from scratch: Empty rtorrent session directory (remove all files)
