@@ -55,9 +55,15 @@ Additionally, both ports need to be published with the container or pod. With [p
 
         $ export TS_RT_CLIENT_HOME=/srv/rtorrent
         
-1. Configure a new environment variable `$TS_USERNS_RT` ... TODO
+1. Configure a new environment variable `$TS_USERNS_RT` as 32-bit (unsigned) integer to define a uid and gi. The container can be run in a new user namespace starting with uid and gid `$TS_USERNS_RT`, e.g.,
 
-2. Run the setup script once to set up your system by creating the download directory, non-root system user and group `rtorrent` with `UID 667` and `GID 667`
+        $ export TS_USERNS_RT=524288
+        
+1. Configure a new environment variable "$TS_UGID_RT". It must be `$TS_USERNS_RT` + 667, e.g., 
+
+        $ export TS_UGID_RT=524955
+
+2. Run the setup script once to set up your system by creating the download directory, non-root system user and group `rtorrent` with `UID` and `GID` defined by `$TS_UGID_RT`
 
         $ ./setup-ts-seedbox.sh
         
