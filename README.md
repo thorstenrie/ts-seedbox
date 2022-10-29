@@ -55,11 +55,11 @@ Additionally, both ports need to be published with the container or pod. With [p
 
         $ export TS_RT_CLIENT_HOME=/srv/rtorrent
         
-1. Configure a new environment variable `$TS_USERNS_RT` as 32-bit (unsigned) integer to define a uid and gi. The container can be run in a new user namespace starting with uid and gid `$TS_USERNS_RT`, e.g.,
+1. Configure a new environment variable `$TS_USERNS_RT` as 32-bit (unsigned) integer to define a uid and gid. The container can be run in a new user namespace mapped to the host system starting with uid and gid `$TS_USERNS_RT`, e.g.,
 
         $ export TS_USERNS_RT=524288
         
-1. Configure a new environment variable "$TS_UGID_RT". It must be `$TS_USERNS_RT` + 667, e.g., 
+1. Configure a new environment variable "$TS_UGID_RT". It must be `$TS_USERNS_RT` + 667 and is the mapped container rtorrent user on the host rtorrent user, e.g., 
 
         $ export TS_UGID_RT=524955
 
@@ -67,7 +67,7 @@ Additionally, both ports need to be published with the container or pod. With [p
 
         $ ./setup-ts-seedbox.sh
         
-3. Run the start script to start a pod, the container and open the log output. A volume for session data is created and the download directory is mounted into the container
+3. Run the start script to start a pod, the container and open the log output. The session data directory and the download directory are mounted into the container
 
         $ ./start-ts-seedbox.sh
         
@@ -79,7 +79,7 @@ Additionally, both ports need to be published with the container or pod. With [p
 
         $ ./stop-ts-seedbox.sh
         
-6. To remove all images and the volume for the session data, you can run
+6. To remove all container images, you can run
 
         $ ./remove-ts-seedbox.sh
         
@@ -87,22 +87,29 @@ Additionally, both ports need to be published with the container or pod. With [p
 
 ### Download directory
 
-The download directory is a bind mount mapping the download directory in the container a defined download directory on the host system. Therefore, a download directory needs to be created in the container and in the host system.
+The download directory is a bind mount mapping the download directory in the container to a defined download directory on the host system. Therefore, a download directory needs to be created in the container and in the host system.
 
 - For the container, the directory will be automatically created in the container build
 - For the host system, you need to define and create it by yourself.
 
-First, create an environment variable, holding the host system download directory path, e.g., `/srv/rtorrent`
+First, create an environment variable, holding the host system rtorrent directory path, e.g., `/srv/rtorrent`
 
         $ export TS_RT_CLIENT_HOME=/srv/rtorrent
 
-Afterwards, create the directory
+Afterwards, create the directory, e.g.,
 
         # mkdir -p "$TS_RT_CLIENT_HOME"/download
         
 ### rTorrent session data
 
-The rTorrent session data should be stored in the host system. This enables to keep session data in case the container is stopped or removed and is launched again afterwards. Therefore, the named volume `rtorrent_session` is created when running the container the first time (see below). Afterwards, the named volume will be used for following executions of the container.
+The rTorrent session data should also be stored in the host system. This enables to keep session data in case the container is stopped or removed and is launched again afterwards. Therefore, a session data directory needs to be created in the container and in the host system. As above,
+
+- For the container, the directory will be automatically created in the container build
+- For the host system, you need to define and create it by yourself.
+
+Create the directory, e.g., 
+
+        # mkdir -p "$TS_RT_CLIENT_HOME"/session
 
 ### Non-root system user
 
@@ -110,21 +117,24 @@ Within the container, the rtorrent client will be executed by a non-root system 
 
 - For the container, the user will be automatically created in the container build
 - For the host system, you need to create the user, group and change the owner of `$TS_RT_CLIENT_HOME`
+- It is recommended, for security reasons, to have a new user namespace for the container, which is mapped to the host system uid and gid. Multiples of 2^16 with size 2^16 are a reasonable mapping of the container user namespace on the host system uid and gid. As example, container uid and gid `0` to `65535` can be mapped to the host system starting with uid and gid `524288` and size `65536`
+- In this case, the rtorrent uid and gid on the host system is different from the uid and gid in the container. On the host system, the rtorrent uid and gid must correspond to the user namespace mapping.
+- In the following, the above mapping is assumed. Therefore, on the host system, rtorrent uid and gid is `524955` (524288 + 667).
 
-To create the group and user, run
+To create the group and user on the host system, run
 
-    # groupadd -r --gid 667 rtorrent
-    # useradd -r --uid 667 --gid 667 -s /usr/bin/nologin rtorrent
+    # groupadd -r --gid 524955 rtorrent
+    # useradd -r --uid 524955 --gid 524955 -s /usr/bin/nologin rtorrent
     
 Next, change the owner of `$TS_RT_CLIENT_HOME` to the new user
 
-    # chown 667:667 "$TS_RT_CLIENT_HOME"/download
+    # chown -R 524955:524955 "$TS_RT_CLIENT_HOME"/download
 
 ### Build container image
 
-The container image `rt_client` is build with [podman-build](https://docs.podman.io/en/latest/markdown/podman-build.1.html). With the flags `--pull` and `--no-cache` we explicitely require the base image to be pulled from the registry and build from start.
+The container image `rt_client` is build with [podman-build](https://docs.podman.io/en/latest/markdown/podman-build.1.html). With the flags `--pull` and `--no-cache` it explicitely requires the base image to be pulled from the registry and build from start.
 
-    # podman build --pull --no-cache  -t rt_client ./rt_client/
+    # podman build --pull --no-cache -t rt_client ./rt_client/
     
 ### Create pod
 
@@ -132,17 +142,19 @@ The container will be launched in a pod [1](https://kubernetes.io/docs/concepts/
 
     # podman pod create \
         --name ts_seedbox_pod \
+        --uidmap 0:524288:65536 \
+        --gidmap 0:524288:65536 \
         --publish 50000:50000 \
         --publish 6881:6881 \
         --publish 6881:6881/udp
 
 ### Launch container
 
-With [podman-run](https://docs.podman.io/en/latest/markdown/podman-run.1.html), the rtorrent client is launched in container `rt_clt` in pod `ts_seedbox_pod`. With the `--volume` flags, the download directory bind mount and named session data volume are used. With `--rm` the container will be removed when it exits.
+With [podman-run](https://docs.podman.io/en/latest/markdown/podman-run.1.html), the rtorrent client is launched in container `rt_clt` in pod `ts_seedbox_pod`. With the `--volume` flags, the download directory and session data directory bind mounts are used. With `--rm` the container will be removed when it exits.
 
     # podman run --rm -d \
         --pod ts_seedbox_pod \
-        --volume rtorrent_session:/home/rtorrent/rtorrent/.session \
+        --volume "$TS_RT_CLIENT_HOME"/session:/home/rtorrent/rtorrent/.session \
         --volume "$TS_RT_CLIENT_HOME"/download:/home/rtorrent/rtorrent/download \
         --name rt_clt \
         rt_client
@@ -161,7 +173,7 @@ First, download the latest Archlinux `.torrent` file
 
     $ curl https://archlinux.org/releng/releases/$(date +'%Y.%m.01')/torrent/ --output archlinux.iso.torrent
     
-Next, copy the `.torrent` file into the start directory in the container
+Check, if the `.torrent` file is correct. Next, copy the `.torrent` file into the start directory in the container
 
     # podman cp archlinux.iso.torrent rt_clt:/home/rtorrent/rtorrent/watch/start
     
@@ -181,7 +193,6 @@ The following commands remove the pod, container, container images and named ses
     # podman container rm rt_clt
     # podman rmi archlinux
     # podman rmi rt_client
-    # podman volume rm rtorrent_session
 
 ## Configuration & Maintainance
 
@@ -198,3 +209,7 @@ The following commands remove the pod, container, container images and named ses
 - Global upload and download rate limits are set in `rt_client/config.d/4_perf.rc`
 
 - In the sense of a rolling-release model, it is recommended to rebuild the container image frequently, e.g., based on time periods, like weekly, or every time it is launched. This ensures that the container stays up-to-date with latest updates making full use of the rolling-release model of Archlinux.
+
+## Known Issues
+
+TODO
