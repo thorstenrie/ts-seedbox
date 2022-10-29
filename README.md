@@ -55,15 +55,15 @@ Additionally, both ports need to be published with the container or pod. With [p
 
         $ export TS_RT_CLIENT_HOME=/srv/rtorrent
         
-1. Configure a new environment variable `$TS_USERNS_RT` as 32-bit (unsigned) integer to define a uid and gid. The container can be run in a new user namespace mapped to the host system starting with uid and gid `$TS_USERNS_RT`, e.g.,
+1. Configure a new environment variable `$TS_USERNS_RT` for the new container user namespace (on most platforms as 32-bit unsigned integer). The uid and gid in the container starting with `0` (root) are mapped to uid and gid starting with `$TS_USERNS_RT` on the host system. Following uids and gids are mapped consecutively. It is recommended to run the container in such of a new user namespace mapped to the host system. The mapping on the host system starts with uid and gid `$TS_USERNS_RT`, e.g.,
 
         $ export TS_USERNS_RT=524288
         
-1. Configure a new environment variable "$TS_UGID_RT". It must be `$TS_USERNS_RT` + 667 and is the mapped container rtorrent user on the host rtorrent user, e.g., 
+1. Configure a new environment variable "$TS_UGID_RT". It must be `$TS_USERNS_RT` + 667 and is the target uid and gid of the rtorrent user on the host system, e.g., 
 
         $ export TS_UGID_RT=524955
 
-2. Run the setup script once to set up your system by creating the download directory, non-root system user and group `rtorrent` with `UID` and `GID` defined by `$TS_UGID_RT`
+2. Run the setup script once to set up your system by creating the download directory, the session data directory, a non-root system user and group `rtorrent` with `UID` and `GID` defined by `$TS_UGID_RT`
 
         $ ./setup-ts-seedbox.sh
         
@@ -113,13 +113,13 @@ Create the directory, e.g.,
 
 ### Non-root system user
 
-Within the container, the rtorrent client will be executed by a non-root system user with username `rtorrent`, `UID 667` in group `rtorrent`, `GID 667`. The user is also required to be existent on the host system to actually store downloaded files in the bind mount.
+Within the container, the rtorrent client will be executed by a non-root system user with username `rtorrent` in group `rtorrent`. The user is also required to be existent on the host system to actually store downloaded files in the bind mount.
 
 - For the container, the user will be automatically created in the container build
 - For the host system, you need to create the user, group and change the owner of `$TS_RT_CLIENT_HOME`
 - It is recommended, for security reasons, to have a new user namespace for the container, which is mapped to the host system uid and gid. Multiples of 2^16 with size 2^16 are a reasonable mapping of the container user namespace on the host system uid and gid. As example, container uid and gid `0` to `65535` can be mapped to the host system starting with uid and gid `524288` and size `65536`
 - In this case, the rtorrent uid and gid on the host system is different from the uid and gid in the container. On the host system, the rtorrent uid and gid must correspond to the user namespace mapping.
-- In the following, the above mapping is assumed. Therefore, on the host system, rtorrent uid and gid is `524955` (524288 + 667).
+- In the following, the above mapping is assumed. Therefore, on the host system, rtorrent uid and gid is `524955` (524288 + 667). In the container, rtorrent uid an dgis is `667`.
 
 To create the group and user on the host system, run
 
@@ -187,7 +187,7 @@ The container can be stopped by stopping containers in the `ts_seedbox_pod` with
     
 ### Remove all 
 
-The following commands remove the pod, container, container images and named session data volume.
+The following commands remove the pod, container amd container images.
 
     # podman pod rm ts_seedbox_pod
     # podman container rm rt_clt
