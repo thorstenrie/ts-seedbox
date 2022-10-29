@@ -212,4 +212,4 @@ The following commands remove the pod, container, container images and named ses
 
 ## Known Issues
 
-TODO
+If using a new user namespace, RTorrent logging to stdout does not work. Logging to file `/dev/stdout` fails [upstream](https://github.com/rakshasa/libtorrent/blob/e60f222241319aaae482789517ad00ae9344bd13/src/torrent/utils/log.cc#L389). Therefore, a workaround is provided with [sart.sh](https://github.com/thorstenrie/ts-seedbox/blob/main/rt_client/start.sh). TODO
