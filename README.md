@@ -212,6 +212,12 @@ The following commands remove the pod, container amd container images.
 
 ## Known Limitations & Issues
 
+### Visualization
+
 The container does not provide a visualization of download progress, monitoring on the status (e.g., connected peers) and statistics on traffic (e.g., send/received).
 
-If using a new user namespace and uid and gid mapping, RTorrent logging to `/dev/stdout` does not work (`method.insert = cfg.logfile,  private|const|string, (cat,"/dev/stdout")` [3](https://github.com/thorstenrie/ts-seedbox/blob/a369e7e02daa291301f3a8f8966ce448ddf371a3/rt_client/config.d/1_log.rc#L3)). Logging to file `/dev/stdout` fails in [libtorrent](https://github.com/rakshasa/libtorrent/blob/e60f222241319aaae482789517ad00ae9344bd13/src/torrent/utils/log.cc#L389). Therefore, a workaround is provided with [sart.sh](https://github.com/thorstenrie/ts-seedbox/blob/main/rt_client/start.sh). RTorrent is configured to store log messages in a file (`method.insert = cfg.logfile, private|const|string, (cat,(cfg.logs),"rtorrent-",(system.time),".log")` [4](https://github.com/thorstenrie/ts-seedbox/blob/4c3d516626a01ac4b6e489044530611dc4ba59d3/rt_client/config.d/1_log.rc#L4)). The file is printed to stdout by [tail](https://man.archlinux.org/man/tail.1) and outputs appended data as the log file grows.
+### Containers / crun issue [#1019](https://github.com/containers/crun/issues/1019)
+
+The issue is fixed by [#1020](https://github.com/containers/crun/pull/1020) and now waiting to progress downstream. Until then, the following workaround is employed:
+
+If using a new user namespace and uid and gid mapping, RTorrent logging to `/dev/stdout` does not work (`method.insert = cfg.logfile,  private|const|string, (cat,"/dev/stdout")` [3](https://github.com/thorstenrie/ts-seedbox/blob/a369e7e02daa291301f3a8f8966ce448ddf371a3/rt_client/config.d/1_log.rc#L3)). Logging to file `/dev/stdout` fails in [libtorrent](https://github.com/rakshasa/libtorrent/blob/e60f222241319aaae482789517ad00ae9344bd13/src/torrent/utils/log.cc#L389). Therefore, a workaround is provided with [sart.sh](https://github.com/thorstenrie/ts-seedbox/blob/main/rt_client/start.sh). RTorrent is configured to store log messages in a file (`method.insert = cfg.logfile, private|const|string, (cat,(cfg.logs),"rtorrent-",(system.time),".log")` [4](https://github.com/thorstenrie/ts-seedbox/blob/4c3d516626a01ac4b6e489044530611dc4ba59d3/rt_client/config.d/1_log.rc#L4)). The file is printed to stdout by [tail](https://man.archlinux.org/man/tail.1) and tail outputs appended data as the log file grows.
