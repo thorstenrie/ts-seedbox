@@ -7,7 +7,7 @@ method.insert = get_public_ip_address, simple|private, "execute.capture=/bin/bas
 schedule2 = ip_tick, 0, 1800, "network.local_address.set=(get_public_ip_address)"
 
 # Default tracker
-method.insert = d.add_tracker, simple|private, "d.tracker.insert=\"10\", \"http://tracker.openbittorrent.com:80/announce\""
+method.insert = d.add_tracker, simple|private, "d.tracker.insert=\"10\", \"http://tracker.opentrackr.org:1337/announce\""
 
 # Add tracker to new torrents
 method.set_key = event.download.inserted_new, tracker_insert, ((d.add_tracker))
