@@ -119,7 +119,7 @@ Within the container, the rtorrent client will be executed by a non-root system 
 - For the host system, you need to create the user, group and change the owner of `$TS_RT_CLIENT_HOME`
 - It is recommended, for security reasons, to have a new user namespace for the container, which is mapped to host system uid and gid ranges. Multiples of 2^16 with size 2^16 are a reasonable mapping on the host system uid and gid ranges. As example, container uid and gid `0` to `65535` can be mapped to the host system starting with uid and gid `524288` (and size `65536`)
 - In this case, the rtorrent uid and gid on the host system is different from the uid and gid in the container. On the host system, the rtorrent uid and gid must correspond to the user namespace mapping.
-- In the following, the above mapping is assumed. Therefore, on the host system, rtorrent uid and gid is `524955` (524288 + 667). In the container, rtorrent uid an dgis is `667`.
+- In the following, the above mapping is assumed. Therefore, on the host system, rtorrent uid and gid is `524955` (524288 + 667). In the container, rtorrent uid and gid is `667`.
 
 To create the group and user on the host system, run
 
