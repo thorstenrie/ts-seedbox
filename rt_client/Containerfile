@@ -12,12 +12,10 @@ RUN groupadd -g $UGID rtorrent && \
      mkdir /home/rtorrent/rtorrent/.session && \
      mkdir /home/rtorrent/rtorrent/download && \
      mkdir /home/rtorrent/rtorrent/watch && \
-     mkdir /home/rtorrent/rtorrent/log && \
      chown -R rtorrent:rtorrent /home/rtorrent/rtorrent
 
 COPY --chown=rtorrent:rtorrent config.d/ /home/rtorrent/rtorrent/config.d/
 COPY --chown=rtorrent:rtorrent .rtorrent.rc /home/rtorrent/
-COPY --chown=rtorrent:rtorrent start.sh /home/rtorrent/
 
 EXPOSE 50000
 EXPOSE 6881
@@ -25,4 +23,4 @@ EXPOSE 6881/udp
 
 USER rtorrent
 
-CMD ["/home/rtorrent/start.sh"]
+CMD ["rtorrent"]
