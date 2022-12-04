@@ -3,8 +3,8 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/thorstenrie/ts-seedbox/badge)](https://www.codefactor.io/repository/github/thorstenrie/ts-seedbox)
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/thorstenrie/ts-seedbox)
 
-![Docker Image Version (latest by date)](https://img.shields.io/docker/v/thorstenrie/ts-seedbox)
 ![Docker Pulls](https://img.shields.io/docker/pulls/thorstenrie/ts-seedbox)
+![Docker Image Version (latest by date)](https://img.shields.io/docker/v/thorstenrie/ts-seedbox)
 ![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/thorstenrie/ts-seedbox)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/thorstenrie/ts-seedbox)
