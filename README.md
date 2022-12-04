@@ -3,6 +3,8 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/thorstenrie/ts-seedbox)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/thorstenrie/ts-seedbox)
 ![GitHub last commit](https://img.shields.io/github/last-commit/thorstenrie/ts-seedbox)
+![OSS Lifecycle](https://img.shields.io/osslifecycle/thorstenrie/ts-seedbox)
+[![CodeFactor](https://www.codefactor.io/repository/github/thorstenrie/ts-seedbox/badge)](https://www.codefactor.io/repository/github/thorstenrie/ts-seedbox)
 ![GitHub](https://img.shields.io/github/license/thorstenrie/tserr)
 
 ![Docker Image Version (latest by date)](https://img.shields.io/docker/v/thorstenrie/ts-seedbox)
