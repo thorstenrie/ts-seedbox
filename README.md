@@ -1,4 +1,14 @@
 # ts-seedbox
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/thorstenrie/ts-seedbox)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/thorstenrie/ts-seedbox)
+![GitHub last commit](https://img.shields.io/github/last-commit/thorstenrie/ts-seedbox)
+![GitHub](https://img.shields.io/github/license/thorstenrie/tserr)
+
+![Docker Image Version (latest by date)](https://img.shields.io/docker/v/thorstenrie/ts-seedbox)
+![Docker Pulls](https://img.shields.io/docker/pulls/thorstenrie/ts-seedbox)
+![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/thorstenrie/ts-seedbox)
+
 [RTorrent](https://github.com/rakshasa/rtorrent/wiki) and [Archlinux](https://archlinux.org/) based seedbox container that tries to keep it simple ([KISS principle](https://en.wikipedia.org/wiki/KISS_principle)). One purpose could be to support distributing free software if you can spare server and bandwidth resources (e.g., [Archlinux](https://archlinux.org/download/)). After the network and container setup is completed, just put torrent files into the container's *watch/start* directory and the file will be downloaded to the host *download* directory and continued to be seeded.
 
 - **Security**: rTorrent is run from a non-root system user, ready and recommended to be run in a new user namespace
