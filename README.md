@@ -12,7 +12,7 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/thorstenrie/ts-seedbox)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/thorstenrie/ts-seedbox)
 ![GitHub Top Language](https://img.shields.io/github/languages/top/thorstenrie/ts-seedbox)
-![GitHub](https://img.shields.io/github/license/thorstenrie/tserr)
+![GitHub](https://img.shields.io/github/license/thorstenrie/ts-seedbox)
 
 [RTorrent](https://github.com/rakshasa/rtorrent/wiki) and [Archlinux](https://archlinux.org/) based seedbox container that tries to keep it simple ([KISS principle](https://en.wikipedia.org/wiki/KISS_principle)). One purpose could be to support distributing free software if you can spare server and bandwidth resources (e.g., [Archlinux](https://archlinux.org/download/)). After the network and container setup is completed, just put torrent files into the container's *watch/start* directory and the file will be downloaded to the host *download* directory and continued to be seeded.
 
