@@ -62,9 +62,9 @@ Additionally, both ports need to be published with the container or pod. With [p
 
 > It is recommended to check the scripts before executing them to prevent unwanted behavior
 
-1. Change your current directory to `example-scripts`
+1. Change your current directory to `example_scripts`
 
-        $ cd example-scripts
+        $ cd example_scripts
 
 1. Configure a new environment variable `$TS_RT_CLIENT_HOME` pointing to the directory where the downloaded files will be stored, e.g., 
 
